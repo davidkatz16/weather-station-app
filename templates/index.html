@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Station</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather Station Data</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Temperature (°C)</th>
+                    <th>Pressure (hPa)</th>
+                    <th>Humidity (%)</th>
+                    <th>Wind Direction</th>
+                    <th>Wind Speed (m/s)</th>
+                    <th>Rainfall (mm)</th>
+                </tr>
+            </thead>
+            <tbody id="weather-data">
+                <!-- Data will be populated here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function fetchData() {
+            const response = await fetch('/get_data');
+            const data = await response.json();
+            const tableBody = document.getElementById('weather-data');
+            tableBody.innerHTML = '';
+            data.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${new Date(entry.timestamp).toLocaleString()}</td>
+                    <td>${entry.temperature}</td>
+                    <td>${entry.pressure}</td>
+                    <td>${entry.humidity}</td>
+                    <td>${entry.wind_direction}</td>
+                    <td>${entry.wind_speed}</td>
+                    <td>${entry.rainfall}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Fetch data every 5 seconds
+        setInterval(fetchData, 5000);
+        fetchData();
+    </script>
+</body>
+</html>
